@@ -40,16 +40,16 @@ namespace Challenge.BL
 
         public static int EliminatePlayerAndPassTheBall(List<Players> players, int QueNumber, DetailedResponse detailedResponse)
         {
-            var playerWithBall = players.Where(x => x.QueueNumber == QueNumber).FirstOrDefault();
-            var playerToEliminate = players.Where(x => !x.BoEliminated  && x.QueueNumber > playerWithBall.QueueNumber).FirstOrDefault();
+            var playerWithBall = players.Where(x => x.QueueNumber == QueNumber).LastOrDefault();
+            var playerToEliminate = players.Where(x => !x.BoEliminated  && x.QueueNumber < playerWithBall.QueueNumber).LastOrDefault();
             if (playerToEliminate == null)
-                playerToEliminate = players.Where(x => x.QueueNumber > 0 && !x.BoEliminated).FirstOrDefault();
+                playerToEliminate = players.Where(x => x.QueueNumber <= players.Count && !x.BoEliminated).LastOrDefault();
 
             playerToEliminate.EliminatePlayer();
-            var playerToPass = players.Where(x => !x.BoEliminated && x.QueueNumber > playerToEliminate.QueueNumber).FirstOrDefault();
+            var playerToPass = players.Where(x => !x.BoEliminated && x.QueueNumber < playerToEliminate.QueueNumber).LastOrDefault();
 
             if (playerToPass == null)
-                playerToPass = players.Where(x => x.QueueNumber > 0 && !x.BoEliminated).FirstOrDefault();
+                playerToPass = players.Where(x => x.QueueNumber <= players.Count && !x.BoEliminated).LastOrDefault();
 
             var action = new GameActions();
             action.StartedPlayer = playerWithBall.QueueNumber;
